@@ -33,14 +33,29 @@ var Word = function() {
   this.jumble = setJumble(this.word);
 };
 
+Word.prototype.displayWord = function() {
+  var dispWord = '';
+  this.jumble.forEach((char) => {
+    dispWord += ' ' + char.display;
+  });
+  return dispWord;
+};
+
 function setJumble(word) {
   var jumble = [];
   for (var i = 0; i < word.length; i++) {
     var char = new Char(word.charAt(i));
     jumble.push(char);
   }
-//   console.log(jumble);
   return jumble;
 }
+
+Word.prototype.isSolved = function() {
+  var solved = true;
+  this.jumble.forEach((char) => {
+    if (!char.guessed) solved = false;
+  });
+  return solved;
+};
 
 module.exports = Word;
