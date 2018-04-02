@@ -1,0 +1,22 @@
+{
+  "name": "behangman",
+  "version": "1.0.0",
+  "description": "Hangman",
+  "main": "index.beHangman.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/madhavparekh/backendRPS.git"
+  },
+  "author": "Madhav Parekh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/madhavparekh/backendRPS/issues"
+  },
+  "homepage": "https://github.com/madhavparekh/backendRPS#readme",
+  "dependencies": {
+    "inquirer": "^5.2.0"
+  }
+}
