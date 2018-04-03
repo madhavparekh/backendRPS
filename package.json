@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/madhavparekh/backendRPS#readme",
   "dependencies": {
+    "clear": "^0.1.0",
+    "colors": "^1.2.1",
     "inquirer": "^5.2.0"
   }
 }
