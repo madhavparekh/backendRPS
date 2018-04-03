@@ -29,7 +29,9 @@ const pizzaWords = [
 var Char = require('./Char');
 
 var Word = function() {
-  this.word = pizzaWords[Math.floor(Math.random() * (pizzaWords.length - 1))].toUpperCase();
+  this.word = pizzaWords[
+    Math.floor(Math.random() * (pizzaWords.length - 1))
+  ].toUpperCase();
   this.jumble = setJumble(this.word);
 };
 
@@ -38,7 +40,19 @@ Word.prototype.displayWord = function() {
   this.jumble.forEach((char) => {
     dispWord += ' ' + char.display;
   });
+  dispWord += ' ';
   return dispWord;
+};
+
+Word.prototype.getCharIndexes = function(charIndx, char) {
+  var charIndxArr = [];
+  var lastIndx = this.word.lastIndexOf(char);
+  charIndxArr.push(charIndx);
+  for (var i = charIndx; i < lastIndx; i += charIndx) {
+    charIndx = this.word.indexOf(char, ++charIndx);
+    charIndxArr.push(charIndx);
+  }
+  return charIndxArr;
 };
 
 function setJumble(word) {
