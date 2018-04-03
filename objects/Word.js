@@ -29,7 +29,7 @@ const pizzaWords = [
 var Char = require('./Char');
 
 var Word = function() {
-  this.word = pizzaWords[Math.floor(Math.random() * (pizzaWords.length - 1))];
+  this.word = pizzaWords[Math.floor(Math.random() * (pizzaWords.length - 1))].toUpperCase();
   this.jumble = setJumble(this.word);
 };
 
