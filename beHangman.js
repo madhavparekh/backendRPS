@@ -32,6 +32,8 @@ inquirer
 
 function startGame() {
   clear();
+  var timer;
+
   inquirer
     .prompt([
       {
@@ -41,9 +43,42 @@ function startGame() {
           guessesLeft.toString().yellow
         } | Letters Entered : ${charGuessed}\n  Word ${game} - Solve: ${
           word.displayWord().bgMagenta
-        }\n `,
+        }\n`,
         name: 'char',
         type: 'text',
+        //testing timer+++++++
+        default: (char) => {
+          var i = 0;
+          var j = 0;
+          var plus = '';
+          var loader = [`-`, `\\`, `|`, `/`];
+          timer = setInterval(() => {
+            if (i >= 5) {
+              guessesLeft--;
+              plus = '';
+              if(guessesLeft === 0){
+                //exit from question prompt
+                clearInterval(timer);
+                return true;
+              }
+
+              i = 0;
+            } else {
+              var loaderStr = `  [${plus}${loader[j % loader.length]}`.padEnd(8, ` `);
+              j++;
+              process.stdout.write(
+                `${loaderStr}] - You have ${5 -
+                  i} seconds to pick else you lose 1 guess..`
+              );
+              process.stdout.cursorTo(0);
+            }
+            if(j%4 === 0){
+              i++;
+              plus += '+';
+            }
+          }, 250);
+        },
+        //++++++++++++++++++++
         validate: (char) => {
           char = char.toUpperCase();
           if (/.[\w|\s]/.test(char)) {
@@ -59,6 +94,7 @@ function startGame() {
       },
     ])
     .then((data) => {
+      clearInterval(timer);
       var char = data.char.toUpperCase();
       guessesLeft--;
       charGuessed += char + ',';
@@ -109,8 +145,8 @@ function toContinue() {
         game++;
         startGame();
       } else {
-        console.log(`Final Score: Wins - ${wins} | Loses - ${loses}`.yellow);
-        console.log('See you next time!');
+        console.log(`  Final Score: Wins - ${wins} | Loses - ${loses}`.yellow);
+        console.log('  See you next time!');
       }
     });
 }
