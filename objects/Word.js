@@ -47,7 +47,7 @@ Word.prototype.displayWord = function() {
 Word.prototype.getCharIndexes = function(charIndx, char) {
   var charIndxArr = [];
   var lastIndx = this.word.lastIndexOf(char);
-  charIndxArr.push(charIndx);
+  charIndxArr.push(charIndx, lastIndx);
   for (var i = charIndx; i < lastIndx; i += charIndx) {
     charIndx = this.word.indexOf(char, ++charIndx);
     charIndxArr.push(charIndx);
