@@ -11,6 +11,7 @@ var guessesLeft = 15; // life
 var charGuessed = '';
 var game = 1;
 var name = '';
+var timer; // setInterval
 
 var word = new Word();
 console.log(word.word);
@@ -32,8 +33,6 @@ inquirer
 
 function startGame() {
   clear();
-  var timer;
-
   inquirer
     .prompt([
       {
@@ -48,48 +47,11 @@ function startGame() {
         type: 'text',
         //testing timer+++++++
         default: (char) => {
-          var i = 0;
-          var j = 0;
-          var plus = '';
-          var loader = [`-`, `\\`, `|`, `/`];
-          timer = setInterval(() => {
-            if (i >= 5) {
-              guessesLeft--;
-              plus = '';
-              if(guessesLeft === 0){
-                //exit from question prompt
-                clearInterval(timer);
-                return true;
-              }
-
-              i = 0;
-            } else {
-              var loaderStr = `  [${plus}${loader[j % loader.length]}`.padEnd(8, ` `);
-              j++;
-              process.stdout.write(
-                `${loaderStr}] - You have ${5 -
-                  i} seconds to pick else you lose 1 guess..`
-              );
-              process.stdout.cursorTo(0);
-            }
-            if(j%4 === 0){
-              i++;
-              plus += '+';
-            }
-          }, 250);
+          return startTimer(char);
         },
         //++++++++++++++++++++
         validate: (char) => {
-          char = char.toUpperCase();
-          if (/.[\w|\s]/.test(char)) {
-            return 'Enter single charactor';
-          } else if (charGuessed.indexOf(char) !== -1) {
-            return `"${char}" already entered! Enter new letter`;
-          } else if (char.charCodeAt(0) > 90 || char.charCodeAt(0) < 65) {
-            return 'Enter a thru z OR space only as input';
-          } else {
-            return true;
-          }
+          return validateInput(char);
         },
       },
     ])
@@ -128,6 +90,20 @@ function startGame() {
     });
 }
 
+function validateInput(char) {
+  //clearInterval(timer);
+  char = char.toUpperCase();
+  if (/.[\w|\s]/.test(char)) {
+    return 'Enter single charactor';
+  } else if (charGuessed.indexOf(char) !== -1) {
+    return `"${char}" already entered! Enter new letter`;
+  } else if (char.charCodeAt(0) > 90 || char.charCodeAt(0) < 65) {
+    return 'Enter a thru z OR space only as input';
+  } else {
+    return true;
+  }
+}
+
 function toContinue() {
   inquirer
     .prompt([
@@ -149,4 +125,42 @@ function toContinue() {
         console.log('  See you next time!');
       }
     });
+}
+
+function startTimer(char) {
+  var i = 0;
+  var j = 0;
+  var plus = '';
+  var loader = [`-`, `\\`, `|`, `/`];
+  timer = setInterval(() => {
+    if (i >= 5) {
+      guessesLeft--;
+      plus = '';
+      i = 0;
+      if (guessesLeft <= 0) clearInterval(timer);
+      process.stdout.cursorTo(0);
+      process.stdout.clearLine();
+      process.stdout.write(
+        `  D'uh, you lost 1 guess. Enter letter and 'Enter' continue`
+      );
+      process.stdout.cursorTo(0);
+
+      return null;
+    } else {
+      var loaderStr =
+        `[${plus}${loader[j % loader.length]}`.padEnd(11, ` `) + ']';
+      loaderStr = loaderStr.inverse;
+      j++;
+      process.stdout.cursorTo(0);
+      process.stdout.clearLine();
+      process.stdout.write(
+        `  ${loaderStr} - You have ${5 -
+          i} seconds to pick else you lose 1 guess..`
+      );
+    }
+    if (j % 2 === 0) plus += '+';
+    if (j % 4 === 0) i++;
+
+    return null;
+  }, 250);
 }
