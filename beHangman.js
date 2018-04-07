@@ -14,8 +14,6 @@ var name = '';
 var timer; // setInterval
 
 var word = new Word();
-console.log(word.word);
-var gameMsg = ' ';
 
 inquirer
   .prompt([
@@ -71,12 +69,12 @@ function startGame() {
           word.jumble[charIndxArr[j]].setGuessed(char);
         }
         //check if jumble is solved
-        if (!word.isSolved()) {
-          startGame();
-        } else {
+        if (word.isSolved()) {
           console.log(`  You did it! SOLVED : ${word.displayWord()}`.green);
           wins++;
           toContinue();
+        } else {
+          startGame();
         }
       } else {
         if (guessesLeft > 0) {
@@ -133,19 +131,20 @@ function startTimer(char) {
   var plus = '';
   var loader = [`-`, `\\`, `|`, `/`];
   timer = setInterval(() => {
-    if (i >= 5) {
+    if (i === 5) {
       guessesLeft--;
       plus = '';
       i = 0;
-      if (guessesLeft <= 0) clearInterval(timer);
+      j = 0;
+
+      if (guessesLeft === 0) clearInterval(timer);
+
       process.stdout.cursorTo(0);
       process.stdout.clearLine();
       process.stdout.write(
         `  D'uh, you lost 1 guess. Enter letter and 'Enter' continue`
       );
       process.stdout.cursorTo(0);
-
-      return null;
     } else {
       var loaderStr =
         `[${plus}${loader[j % loader.length]}`.padEnd(11, ` `) + ']';
@@ -158,9 +157,8 @@ function startTimer(char) {
           i} seconds to pick else you lose 1 guess..`
       );
     }
+
     if (j % 2 === 0) plus += '+';
     if (j % 4 === 0) i++;
-
-    return null;
   }, 250);
 }
