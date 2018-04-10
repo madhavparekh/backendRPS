@@ -36,60 +36,61 @@ function startGame() {
       {
         message: `Player: ${name.blue} | Wins : ${
           wins.toString().green
-        } | Loses : ${loses.toString().red} | Guesses Left : ${
-          guessesLeft.toString().yellow
-        } | Letters Entered : ${charGuessed}\n  Word ${game} - Solve: ${
+        } | Loses : ${
+          loses.toString().red
+        } | Letters Entered : ${charGuessed}\n\n  Word ${game} - Solve: ${
           word.displayWord().bgMagenta
-        }\n`,
+        }\n\n  Enter single letter between a thru z or 'space bar' & press ENTER\n\n`,
         name: 'char',
         type: 'text',
-        //testing timer+++++++
         default: (char) => {
           return startTimer(char);
         },
-        //++++++++++++++++++++
         validate: (char) => {
           return validateInput(char);
         },
       },
     ])
     .then((data) => {
-      clearInterval(timer);
-      var char = data.char.toUpperCase();
-      guessesLeft--;
-      charGuessed += char + ',';
-
-      var charIndx = word.word.indexOf(char);
-
-      if (charIndx > -1) {
-        var charIndxArr = word.getCharIndexes(charIndx, char);
-
-        //set flag true for char.guessed
-        for (var j = 0; j < charIndxArr.length; j++) {
-          word.jumble[charIndxArr[j]].setGuessed(char);
-        }
-        //check if jumble is solved
-        if (word.isSolved()) {
-          console.log(`  You did it! SOLVED : ${word.displayWord()}`.green);
-          wins++;
-          toContinue();
-        } else {
-          startGame();
-        }
-      } else {
-        if (guessesLeft > 0) {
-          startGame();
-        } else {
-          console.log(`  You lose! UNSOLVED : ${word.word}`.red);
-          loses++;
-          toContinue();
-        }
-      }
+      checkCharInWord(data);
     });
 }
 
+function checkCharInWord(data) {
+  clearInterval(timer);
+  var char = data.char.toUpperCase();
+  guessesLeft--;
+  charGuessed += char + ',';
+
+  var charIndx = word.word.indexOf(char);
+
+  if (guessesLeft > 0) {
+    if (charIndx > -1) {
+      var charIndxArr = word.getCharIndexes(charIndx, char);
+
+      //set flag true for char.guessed
+      for (var j = 0; j < charIndxArr.length; j++) {
+        word.jumble[charIndxArr[j]].setGuessed(char);
+      }
+      //check if jumble is solved
+      if (word.isSolved()) {
+        console.log(`  You did it! SOLVED : ${word.displayWord()}`.green);
+        wins++;
+        toContinue();
+      } else {
+        startGame();
+      }
+    } else {
+      startGame();
+    }
+  } else {
+    console.log(`  You lose! UNSOLVED : ${word.word}`.red);
+    loses++;
+    toContinue();
+  }
+}
+
 function validateInput(char) {
-  //clearInterval(timer);
   char = char.toUpperCase();
   if (/.[\w|\s]/.test(char)) {
     return 'Enter single charactor';
@@ -136,29 +137,29 @@ function startTimer(char) {
       plus = '';
       i = 0;
       j = 0;
-
-      if (guessesLeft === 0) clearInterval(timer);
-
-      process.stdout.cursorTo(0);
-      process.stdout.clearLine();
-      process.stdout.write(
-        `  D'uh, you lost 1 guess. Enter letter and 'Enter' continue`
-      );
-      process.stdout.cursorTo(0);
-    } else {
-      var loaderStr =
-        `[${plus}${loader[j % loader.length]}`.padEnd(11, ` `) + ']';
-      loaderStr = loaderStr.inverse;
-      j++;
-      process.stdout.cursorTo(0);
-      process.stdout.clearLine();
-      process.stdout.write(
-        `  ${loaderStr} - You have ${5 -
-          i} seconds to pick else you lose 1 guess..`
-      );
     }
+    var loaderStr =
+      `[${plus}${loader[j % loader.length]}`.padEnd(11, ` `) + ']';
+    loaderStr = loaderStr.inverse;
+    j++;
+    process.stdout.cursorTo(0);
+    process.stdout.clearLine();
+    process.stdout.write(
+      `  Guesses Left : ${guessesLeft.toString().yellow} | ${loaderStr} - ${5 -
+        i} seconds to pick OR lose 1 guess..`
+    );
 
     if (j % 2 === 0) plus += '+';
     if (j % 4 === 0) i++;
+
+    if (guessesLeft <= 0) {
+      process.stdout.cursorTo(0);
+      process.stdout.clearLine();
+      process.stdout.write(
+        `  D'uh, you lose. Enter a letter and press 'Enter' continue`
+      );
+      process.stdout.cursorTo(0);
+      clearInterval(timer);
+    }
   }, 250);
 }
