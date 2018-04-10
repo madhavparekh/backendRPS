@@ -50,7 +50,7 @@ Word.prototype.getCharIndexes = function(charIndx, char) {
   charIndxArr.push(charIndx);
   if (lastIndx !== charIndx) {
     charIndxArr.push(lastIndx);
-    for (var i = charIndx; i < lastIndx; i += charIndx) {
+    for (var i = charIndx + 1; i < lastIndx; i += charIndx) {
       charIndx = this.word.indexOf(char, ++charIndx);
       charIndxArr.push(charIndx);
     }

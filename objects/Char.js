@@ -4,9 +4,6 @@ var Char = function(char) {
   this.display = '_';
 };
 
-// Char.prototype.setDisplay = function() {
-//   this.display = this.guessed ? this.char : this.dash;
-// };
 Char.prototype.getDisplay = function() {
   return this.display;
 };
