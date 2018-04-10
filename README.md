@@ -5,7 +5,9 @@ CLI based hangman game.
 After fork run:
 
 $ npm install
+
 $ node beHangman
+
 ? Welcome to game of Pizza Themed Hangman where all words are related to pizzas and pizza's origin.
   Press key a thru z or space bar to solve
   Your name? John Doe
